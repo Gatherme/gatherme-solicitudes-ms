@@ -1,0 +1,105 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservicio para Solicitudes
+  description: Python + SQLite
+  license:
+    name: Proyecto Gatherme, Software Architecture, 2020-I
+  
+    
+host: host:5000
+basePath: /api
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+  
+  
+paths:
+  /solicitudes:
+    post:
+      summary: Crear una nueva solicitud de Gather
+      operationId: createSol
+      parameters:
+        - name: usuario_envia
+          in: path
+          required: true
+          description: Usuario que envia la solicitud
+        - name: usuario_recibe
+          in: body
+          required: true
+          description: Usuario que recibe la solicitud
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+    get:
+      summary: Retorna todas las solicitudes guardadas
+      operationId: listSol
+      responses:
+        '200':
+          description: Ok
+        '500':
+          description: Internal Server Error
+
+    put:
+      summary: Aceptar una solicitud
+      operationId: acceptSol
+      parameters:
+        - name: usuario_envia
+          in: path
+          required: true
+          description: Usuario que envia la solicitud
+        - name: usuario_recibe
+          in: body
+          required: true
+          description: Usuario que recibe la solicitud
+      responses:
+        '200':
+          description: Ok
+        '400':
+            description: Invalid Params
+        '500':
+          description: Internal Server Error
+
+    delete:
+      summary: Borrar una solicitud
+      operationId: eraseSol
+      parameters:
+        - name: usuario_envia
+          in: path
+          required: true
+          description: Usuario que envia la solicitud
+        - name: usuario_recibe
+          in: body
+          required: true
+          description: Usuario que recibe la solicitud
+      responses:
+        '200':
+          description: Ok
+        '400':
+            description: Invalid Params
+        '500':
+          description: Internal Server Error
+    
+  
+definitions:
+  Solicitud:
+    type: object
+    properties:
+      id:
+        type: integer
+      usuario_envia:
+        type: string
+      usuario_recibe:
+        type: string
+      is_accepted:
+        type: boolean
+      fecha_envio:
+        type: date
