@@ -1,26 +1,28 @@
 from flask import Flask, request, jsonify
 from models import Schema
-from service import SolicitudService
+from service import RequestService
 
 app = Flask(__name__)
 
-@app.route("/solicitudes", methods=["POST"])
+@app.route("/requests", methods=["POST"])
 def createSol():
-	return SolicitudService().create(request.get_json())
+	return RequestService().create(request.get_json())
 
-@app.route("/solicitudes", methods=["GET"])
+@app.route("/requests", methods=["GET"])
 def listSol():
-	return jsonify(SolicitudService().list())
+	return jsonify(RequestService().list())
 
-@app.route("/solicitudes", methods=["PUT"])
+@app.route("/requests", methods=["PUT"])
 def acceptSol():
-	return SolicitudService().accept(request.get_json())
+	return RequestService().accept(request.get_json())
 	
-@app.route("/solicitudes", methods=["DELETE"])
+@app.route("/requests", methods=["DELETE"])
 def eraseSol():
-	return SolicitudService().erase(request.get_json())
+	return RequestService().erase(request.get_json())
 
 
 if __name__ == "__main__":
 	Schema()
 	app.run(debug=True)
+
+
