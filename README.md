@@ -1,2 +1,2 @@
 # gatherme-solicitudes-ms
-Repositorio del microservicio Solicitudes
+Repositorio del microservicio Requests (solicitudes)
