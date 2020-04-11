@@ -1,14 +1,15 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: Microservicio para Solicitudes
-  description: Python + SQLite
+  title: gatherme-requests-ms
+  description: "Microservicio para Solicitudes\n 
+    Python + SQLite"
   license:
     name: Proyecto Gatherme, Software Architecture, 2020-I
   
     
-host: host:5000
-basePath: /api
+host: localhost:5000
+basePath: /requests
 schemes:
   - http
 consumes:
@@ -18,19 +19,20 @@ produces:
   
   
 paths:
-  /solicitudes:
+  /requests:
+  
     post:
       summary: Crear una nueva solicitud de Gather
       operationId: createSol
       parameters:
-        - name: usuario_envia
-          in: path
-          required: true
-          description: Usuario que envia la solicitud
-        - name: usuario_recibe
+        - name: usersJSON
           in: body
           required: true
-          description: Usuario que recibe la solicitud
+          description: JSON con los usuarios de la solicitud
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Request"
       responses:
         '201':
           description: Created
@@ -52,14 +54,14 @@ paths:
       summary: Aceptar una solicitud
       operationId: acceptSol
       parameters:
-        - name: usuario_envia
-          in: path
-          required: true
-          description: Usuario que envia la solicitud
-        - name: usuario_recibe
+        - name: usersJSON
           in: body
           required: true
-          description: Usuario que recibe la solicitud
+          description: JSON con los usuarios de la solicitud
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Request"
       responses:
         '200':
           description: Ok
@@ -72,14 +74,14 @@ paths:
       summary: Borrar una solicitud
       operationId: eraseSol
       parameters:
-        - name: usuario_envia
-          in: path
-          required: true
-          description: Usuario que envia la solicitud
-        - name: usuario_recibe
+        - name: usersJSON
           in: body
           required: true
-          description: Usuario que recibe la solicitud
+          description: JSON con los usuarios de la solicitud
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Request"
       responses:
         '200':
           description: Ok
@@ -90,16 +92,18 @@ paths:
     
   
 definitions:
-  Solicitud:
+  Request:
     type: object
     properties:
       id:
         type: integer
-      usuario_envia:
+      user_origin:
         type: string
-      usuario_recibe:
+      user_destination:
         type: string
       is_accepted:
         type: boolean
-      fecha_envio:
-        type: date
+        default: false
+      send_date:
+        type: string
+        format: date-time
