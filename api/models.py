@@ -15,8 +15,8 @@ class Schema:
 		  id INTEGER PRIMARY KEY,
 		  user_origin TEXT,
 		  user_destination TEXT,
-		  is_accepted boolean DEFAULT False,
-		  send_date Date DEFAULT CURRENT_DATE
+		  send_date Date DEFAULT CURRENT_DATE,
+		  status TEXT DEFAULT "sent"
 		);
 		"""
 		self.conn.execute(query2)
@@ -31,10 +31,7 @@ class RequestModel:
 	def is_created(self, usuario_envia, usuario_recibe):
 		query = 'select * from Requests where user_origin = "'+usuario_envia+'" and user_destination = "'+usuario_recibe+'"'
 		result = self.conn.execute(query)
-		if (len(result.fetchall())==0):
-			return False
-		else:
-			return True
+		return (len(result.fetchall())!=0)
 		
 
 	def create(self, usuario_envia, usuario_recibe):
@@ -42,23 +39,38 @@ class RequestModel:
 		result = self.conn.execute(query)
 		self.conn.commit()
 		return '<p>La solicitud ha sido creada.</p>', 201
+		
 
-	def list(self):
-		query = 'select * from Requests'
-		result = self.conn.execute(query)
-		rows = result.fetchall()
-		return str(rows)
+	def list(self, p, user):
+		if p == 'sent':
+			query = 'select * from Requests where user_origin = "'+user+'"'
+			result = self.conn.execute(query)
+			rows = result.fetchall()
+			return str(rows)
+		elif p == 'inbox':
+			query = 'select * from Requests where user_destination = "'+user+'"'
+			result = self.conn.execute(query)
+			rows = result.fetchall()
+			return str(rows)
+
 
 	def accept(self, usuario_envia, usuario_recibe):
-		query = 'update Requests SET is_accepted = "True" where user_origin = "'+usuario_envia+'" and user_destination = "'+usuario_recibe+'"'
+		query = 'update Requests SET status = "accepted" where user_origin = "'+usuario_envia+'" and user_destination = "'+usuario_recibe+'" and status = "sent"'
 		result = self.conn.execute(query)
 		self.conn.commit()
 		return '<p>La solicitud ha sido aceptada.</p>'
+		
+		
+	def reject(self, usuario_envia, usuario_recibe):
+		query = 'update Requests SET status = "rejected" where user_origin = "'+usuario_envia+'" and user_destination = "'+usuario_recibe+'" and status = "sent"'
+		result = self.conn.execute(query)
+		self.conn.commit()
+		return '<p>La solicitud ha sido rechazada.</p>'
+		
 		
 	def erase(self, usuario_envia, usuario_recibe):
 		query = 'delete from Requests where user_origin = "'+usuario_envia+'" and user_destination = "'+usuario_recibe+'"'
 		result = self.conn.execute(query)
 		self.conn.commit()
-		return '<p>La solicitud ha sido borrada.</p>'
-		
+		return '<p>La solicitud ha sido borrada.</p>'		
 		

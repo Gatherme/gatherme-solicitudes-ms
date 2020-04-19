@@ -5,22 +5,31 @@ class RequestService:
 	def __init__(self):
 		self.model = RequestModel()
 
-	def create(self, params):
-		if params['user_origin'] == params['user_destination']:
+	def create(self, user_origin, params):
+		if user_origin == params['user_destination']:
 			return '<p>Imposible crear. Usuario destino es igual a usuario origen.</p>', 400
-		elif self.model.is_created(params['user_origin'], params['user_destination']):
+		elif self.model.is_created(user_origin, params['user_destination']):
 			return '<p>Imposible crear. La solicitud de GATHER ya existe.</p>', 400
-		else: return self.model.create(params['user_origin'], params['user_destination'])
+		else: return self.model.create(user_origin, params['user_destination'])
 
-	def list(self):
-		return self.model.list()
+	def sentList(self, user_origin):
+		return self.model.list('sent', user_origin)
+		
+	def inboxList(self, user_destination):
+		return self.model.list('inbox', user_destination)
 
-	def accept(self, params):
-		if self.model.is_created(params['user_origin'], params['user_destination']):
-			return self.model.accept(params['user_origin'], params['user_destination'])
+	def accept(self, user_destination, params):
+		if self.model.is_created(params['user_origin'], user_destination):
+			return self.model.accept(params['user_origin'], user_destination)
 		else: return '<p>Parametros no validos.</p>', 400
 		
-	def erase(self, params):
-		if self.model.is_created(params['user_origin'], params['user_destination']):
-			return self.model.erase(params['user_origin'], params['user_destination'])
+	def reject(self, user_destination, params):
+		if self.model.is_created(params['user_origin'], user_destination):
+			return self.model.reject(params['user_origin'], user_destination)
 		else: return '<p>Parametros no validos.</p>', 400
+		
+	def erase(self, user_origin, params):
+		if self.model.is_created(user_origin, params['user_destination']):
+			return self.model.erase(user_origin, params['user_destination'])
+		else: return '<p>Parametros no validos.</p>', 400
+		
