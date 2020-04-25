@@ -1,13 +1,13 @@
-FROM ubuntu:16.04
+FROM python:3.5
 
-WORKDIR /api
+COPY . /web
 
-RUN pip3 install flask && pip3 install sqlite
+WORKDIR /web/api
 
-EXPOSE 5000
+RUN pip install Flask
 
-ENTRYPOINT [ "python3" ]
+EXPOSE 4444
+
+ENTRYPOINT [ "python" ]
 
 CMD [ "app.py" ]
-
-COPY . .
