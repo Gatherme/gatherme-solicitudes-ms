@@ -8,8 +8,8 @@ info:
     name: Proyecto Gatherme, Software Architecture, 2020-I
   
     
-host: localhost:5000
-basePath: /requests
+host: 0.0.0.0:4444
+basePath: /<user>/gatherme-requests
 schemes:
   - http
 consumes:
@@ -19,11 +19,11 @@ produces:
   
   
 paths:
-  /requests:
-  
+
+  /create:
     post:
       summary: Crear una nueva solicitud de Gather
-      operationId: createSol
+      operationId: create
       parameters:
         - name: usersJSON
           in: body
@@ -32,7 +32,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/Request"
+              $ref: "#/definitions/RequestInput"
       responses:
         '201':
           description: Created
@@ -41,18 +41,56 @@ paths:
         '500':
           description: Internal Server Error
 
+  /sent:
     get:
-      summary: Retorna todas las solicitudes guardadas
-      operationId: listSol
+      summary: Retorna las solicitudes enviadas por el usuario
+      operationId: sent
+      parameters:
+        - name: userJSON
+          in: body
+          required: true
+          description: JSON con el usuario que solicita
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RequestGetInput"
       responses:
         '200':
           description: Ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Request"
+        '500':
+          description: Internal Server Error
+          
+  /inbox:
+    get:
+      summary: Retorna las solicitudes recibidas por el usuario
+      operationId: inbox
+      parameters:
+        - name: userJSON
+          in: body
+          required: true
+          description: JSON con el usuario que solicita
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RequestGetInput"
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Request"
         '500':
           description: Internal Server Error
 
+  /accept:
     put:
       summary: Aceptar una solicitud
-      operationId: acceptSol
+      operationId: accept
       parameters:
         - name: usersJSON
           in: body
@@ -61,7 +99,28 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/Request"
+              $ref: "#/definitions/RequestInput"
+      responses:
+        '200':
+          description: Ok
+        '400':
+            description: Invalid Params
+        '500':
+          description: Internal Server Error
+          
+  /reject:
+    put:
+      summary: Rechazar una solicitud
+      operationId: reject
+      parameters:
+        - name: usersJSON
+          in: body
+          required: true
+          description: JSON con los usuarios de la solicitud
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RequestInput"
       responses:
         '200':
           description: Ok
@@ -70,9 +129,10 @@ paths:
         '500':
           description: Internal Server Error
 
+  /erase:
     delete:
       summary: Borrar una solicitud
-      operationId: eraseSol
+      operationId: erase
       parameters:
         - name: usersJSON
           in: body
@@ -81,7 +141,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/Request"
+              $ref: "#/definitions/RequestInput"
       responses:
         '200':
           description: Ok
@@ -92,6 +152,7 @@ paths:
     
   
 definitions:
+
   Request:
     type: object
     properties:
@@ -101,9 +162,27 @@ definitions:
         type: string
       user_destination:
         type: string
-      is_accepted:
-        type: boolean
-        default: false
+      status:
+        type: string
       send_date:
         type: string
-        format: date-time
+        format: date
+    
+  RequestInput:
+    type: object
+    properties:
+      user_origin:
+        type: string
+      user_destination:
+        type: string
+      token:
+        type: string
+        
+  RequestGetInput:
+    type: object
+    properties:
+      user:
+        type: string
+      token:
+        type: string
+      
