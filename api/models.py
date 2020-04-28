@@ -45,13 +45,11 @@ class RequestModel:
 		if p == 'sent':
 			query = 'select * from Requests where user_origin = "'+user+'"'
 			result = self.conn.execute(query)
-			rows = result.fetchall()
-			return str(rows)
+			return result.fetchall()
 		elif p == 'inbox':
 			query = 'select * from Requests where user_destination = "'+user+'"'
 			result = self.conn.execute(query)
-			rows = result.fetchall()
-			return str(rows)
+			return result.fetchall()
 
 
 	def accept(self, usuario_envia, usuario_recibe):
